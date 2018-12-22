@@ -1,4 +1,4 @@
-﻿version: "3"
+﻿version: "3.2"
 services:
     web:
         image: "gwfvis/server:dev"
@@ -15,7 +15,7 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: "123456qaz"
         volumes:
-            - ./sql_init:/docker-entrypoint-initdb.d
+            - "./sql_init:/docker-entrypoint-initdb.d"
         ports:
             - "3306:3306"
             - "33060:33060"
