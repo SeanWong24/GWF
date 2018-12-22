@@ -12,6 +12,17 @@ namespace Server.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        [HttpGet]
+        public string GetUsername([FromHeader(Name = "User-Unique-Id")] string id)
+        {
+            return DBContextHelper.Worker<GWFContext, string>(context =>
+            {
+                return (from u in context.User
+                        where u.Id == id
+                        select u.Username).FirstOrDefault();
+            });
+        }
+
         [HttpPut]
         public void Add([FromBody] User user)
         {
