@@ -24,7 +24,7 @@ namespace Server.DBModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySql("server=cbd.usask.ca;port=3306;user=root;password=123456qaz;database=GWF");
+                optionsBuilder.UseMySql("server=db;port=3306;user=root;password=123456qaz;database=GWF");
             }
         }
 
