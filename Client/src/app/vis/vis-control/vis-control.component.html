@@ -1,0 +1,14 @@
+<ion-button (click)="resetVisImageTransform()">Reset Position and Scale</ion-button>
+<ion-item>
+  <ion-label>Date</ion-label>
+  <ion-datetime displayFormat="YYYY-MM-DD" [min]="appConfig.minDate" [max]="appConfig.maxDate" [(ngModel)]="pickedDate"></ion-datetime>
+</ion-item>
+<ion-item>
+  <ion-label>Variable</ion-label>
+  <ion-select [(ngModel)]="selectedVariableName">
+    <ion-select-option *ngFor="let variable of appConfig.variableList" [value]="variable">{{variable}}</ion-select-option>
+  </ion-select>
+  <!-- <select [(ngModel)]="selectedVariableName">
+    <option *ngFor="let item of appConfig.variableList" [value]="item">{{item}}</option>
+  </select> -->
+</ion-item>

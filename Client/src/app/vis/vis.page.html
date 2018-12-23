@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <ion-icon name="person" size="large" slot="start"></ion-icon>
+      <ion-label>{{username}}</ion-label>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="notifications" size="large"></ion-icon>
+      </ion-button>
+      <ion-button (click)="signOutClick()">
+        <ion-icon name="log-out" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-row class="upper-row">
+    <ion-col size="12" size-md="9">
+      <ion-card>
+        <app-vis-main [userTagList]="userTagList" [pickedDate]="pickedDate" [selectedVariableName]="selectedVariableName"
+          [(resetVisImageTransform)]="resetVisImageTransform"></app-vis-main>
+      </ion-card>
+    </ion-col>
+    <ion-col>
+      <ion-card>
+        <ion-card-content>
+          <app-vis-control [appConfig]="appConfig" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName"
+            [resetVisImageTransform]="resetVisImageTransform"></app-vis-control>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+  <ion-row class="lower-row">
+    <ion-col>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Stats</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>The content for this card</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>
