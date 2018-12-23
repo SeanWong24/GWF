@@ -43,7 +43,7 @@ export class SignInPage implements OnInit {
       });
       alr.present();
       this.password = null;
-      this.signInButtonText = "Login";
+      this.signInButtonText = "Sign In";
     } else {
       sessionStorage.setItem("userId", responseText.toString());
       this.navCtrl.navigateForward("vis");
