@@ -18,7 +18,7 @@
         <ion-input required type="password" placeholder="Password" [(ngModel)]="password"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input required type="password" placeholder="Re-enter Password" [(ngModel)]="passwordConfirm" (keyup.enter)="signIn()"></ion-input>
+        <ion-input required type="password" placeholder="Re-enter Password" [(ngModel)]="passwordConfirm" (keyup.enter)="signUp()"></ion-input>
       </ion-item>
       <ion-button expand="block" (click)="signUp()">{{signUpButtonText}}</ion-button>
       <ion-button fill="outline" color="medium" expand="block" (click)="signIn()">Back to Sign In</ion-button>
