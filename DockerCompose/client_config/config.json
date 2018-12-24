@@ -1,0 +1,4 @@
+{
+    "serverEndPoint": "http://cbd.usask.ca:8001/api",
+    "visImageBasePath": "http://cbd.usask.ca:8001/img"
+}

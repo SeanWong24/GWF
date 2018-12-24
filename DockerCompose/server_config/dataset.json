@@ -1,0 +1,10 @@
+{
+    "datasetInfo": {
+        "minDate": "2015-01-01",
+        "maxDate": "2015-01-03",
+        "variableList": [
+            "GRDFLX",
+            "SNOW"
+        ]
+    }
+}
