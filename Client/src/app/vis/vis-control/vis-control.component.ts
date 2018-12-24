@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { DatasetInfo } from "src/app/DatasetInfo";
 
 @Component({
   selector: "app-vis-control",
@@ -7,7 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 })
 export class VisControlComponent implements OnInit {
 
-  @Input() appConfig: any;
+  @Input() datasetInfo: DatasetInfo;
 
   @Input() private _pickedDate: string;
   @Input() set pickedDate(value: string) {

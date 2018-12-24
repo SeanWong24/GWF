@@ -26,7 +26,8 @@
     <ion-col>
       <ion-card>
         <ion-card-content>
-          <app-vis-control [appConfig]="appConfig" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName"
+    <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable}}</ion-select-option>
+          <app-vis-control [datasetInfo]="datasetInfo" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName"
             [resetVisImageTransform]="resetVisImageTransform"></app-vis-control>
         </ion-card-content>
       </ion-card>
