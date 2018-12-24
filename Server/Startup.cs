@@ -29,6 +29,7 @@ namespace Server
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
+            services.AddSingleton<IConfiguration>(Configuration);
 
             var dbConnectionString = Configuration.GetValue<string>("dbConnectionString");
             services.AddDbContext<GWFContext>(options => options.UseMySql(dbConnectionString));

@@ -22,6 +22,7 @@ namespace Server
                 .ConfigureAppConfiguration((hostingContext, config) =>{
                     config.SetBasePath(Directory.GetCurrentDirectory());
                     config.AddJsonFile("config/db.json", optional: false, reloadOnChange: true);
+                    config.AddJsonFile("config/dataset.json", optional: false, reloadOnChange: true);
                 })
                 .UseStartup<Startup>();
     }
