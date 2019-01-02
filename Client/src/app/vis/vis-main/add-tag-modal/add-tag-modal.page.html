@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Add a Comment</ion-title>
+    <!-- <ion-title>Add a Comment</ion-title> -->
+    <ion-label slot="start">{{currentTag.type}}</ion-label>
+    <ion-input type="text" [(ngModel)]="currentTag.name" placeholder="Enter the Name"></ion-input>
     <ion-buttons slot="end">
       <ion-button (click)="close()">
         <ion-icon name="close" size="large"></ion-icon>
@@ -10,5 +12,45 @@
 </ion-header>
 
 <ion-content padding>
-
+  <ion-list>
+    <ion-item>
+      <ion-textarea [(ngModel)]="currentTag.comment" placeholder="Enter the Comment"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label>Show it only on {{pickedDate}}</ion-label>
+      <ion-toggle [(ngModel)]="isDateLimited"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Show it only for {{selectedVariableName}}</ion-label>
+      <ion-toggle [(ngModel)]="isVariableLimited"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Color</ion-label>
+      <input type="color" [(ngModel)]="currentTag.color">
+    </ion-item>
+    <div style="padding: 20px">
+      <ion-label>Shared with</ion-label>
+      <ion-item>
+        <ion-list>
+          <ion-item *ngFor="let user of sharedUserList">
+            <ion-label>{{user.username}}</ion-label>
+            <ion-buttons slot="end">
+              <ion-button (click)="removeSharedUser(user)">
+                <ion-icon name="close" size="large"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+          <ion-item>
+              <ion-input type="text" placeholder="Add a new user"></ion-input>
+              <ion-buttons slot="end">
+                <ion-button (click)="close()">
+                  <ion-icon name="add" size="large"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-item>
+        </ion-list>
+      </ion-item>
+    </div>
+    <ion-button (click)="save()">Save</ion-button>
+  </ion-list>
 </ion-content>

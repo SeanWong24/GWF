@@ -16,6 +16,7 @@ export class VisMainComponent implements OnInit {
   private _userTagList: Tag[];
   @Input() set userTagList(value: Tag[]) {
     this._userTagList = value;
+    this.updateSvgImage();
   }
   get userTagList() {
     return this._userTagList;
@@ -48,11 +49,17 @@ export class VisMainComponent implements OnInit {
   mouserRightButtonDown = false;
 
   get mouseSelectionRect() {
-    var temp: [number, number, number, number] = [0, 0, 0, 0];
-    temp[0] = Math.min(this.mouseSelection[0], this.mouseSelection[2]);
-    temp[1] = Math.min(this.mouseSelection[1], this.mouseSelection[3]);
-    temp[2] = Math.max(this.mouseSelection[0], this.mouseSelection[2]);
-    temp[3] = Math.max(this.mouseSelection[1], this.mouseSelection[3]);
+    var temp: [number, number, number, number]
+    if (this.mouseSelection[2] && this.mouseSelection[3]) {
+      temp = [0, 0, 0, 0];
+      temp[0] = Math.min(this.mouseSelection[0], this.mouseSelection[2]);
+      temp[1] = Math.min(this.mouseSelection[1], this.mouseSelection[3]);
+      temp[2] = Math.max(this.mouseSelection[0], this.mouseSelection[2]);
+      temp[3] = Math.max(this.mouseSelection[1], this.mouseSelection[3]);
+    }
+    else {
+      temp = this.mouseSelection;
+    }
     return temp;
   }
 
@@ -101,6 +108,7 @@ export class VisMainComponent implements OnInit {
 
   private selectRectMouseDownHandler(img: d3.Selection<d3.BaseType, {}, HTMLElement, any>) {
     if (d3.event.button == 2) {
+      this.mouseSelection = [null, null, null, null];
       var position = d3.mouse(img.node() as any);
       this.mouseSelection[0] = position[0];
       this.mouseSelection[1] = position[1];
@@ -141,15 +149,28 @@ export class VisMainComponent implements OnInit {
   }
 
   private async addUserTag(rect: [number, number, number, number]) {
+    var position;
+    var tagType: string;
     if (!rect[2] && !rect[3]) {
+      tagType = "dot";
+      position = "(" + rect[0] + "," + rect[1] + ")";
     }
     else {
+      tagType = "rect";
+      position = "(" + rect[0] + "," + rect[1] + "," + rect[2] + "," + rect[3] + ")";
     }
 
     const modal = await this.modalCtrl.create({
-      component: AddTagModalPage
+      component: AddTagModalPage,
+      componentProps: {
+        "pickedDate": this.pickedDate,
+        "selectedVariableName": this.selectedVariableName,
+        "currentTag": new Tag("", tagType, "#111111", position, ""),
+        "isModifying": false
+      }
     });
     modal.present();
+    this.updateSvgImage()
   }
 
   private generateSvgZoom() {
@@ -198,7 +219,7 @@ export class VisMainComponent implements OnInit {
               .attr("r", 3)
               .attr("opacity", .5)
               .attr("fill", tag.color)
-              // .on("click", this.userTagClickedHandler(tag))
+              .on("click", this.userTagClickedHandler(tag))
               .append("title")
               .text(tag.name);
             break;
@@ -212,7 +233,7 @@ export class VisMainComponent implements OnInit {
               .attr("height", +position[3] - +position[1])
               .attr("opacity", .5)
               .attr("fill", tag.color)
-              // .on("click", this.userTagClickedHandler(tag))
+              .on("click", this.userTagClickedHandler(tag))
               .append("title")
               .text(tag.name);
         }
@@ -220,4 +241,19 @@ export class VisMainComponent implements OnInit {
     }
   }
 
+  userTagClickedHandler(tag: Tag) {
+    return async () => {
+      const modal = await this.modalCtrl.create({
+        component: AddTagModalPage,
+        componentProps: {
+          "pickedDate": this.pickedDate,
+          "selectedVariableName": this.selectedVariableName,
+          "currentTag": tag,
+          "isModifying": true
+        }
+      });
+      modal.present();
+      this.updateSvgImage();
+    }
+  }
 }
