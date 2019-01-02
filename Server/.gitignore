@@ -6,6 +6,9 @@
 #my config
 config/
 
+#wwwroot
+wwwroot/
+
 # VS Code
 .vscode/
 
