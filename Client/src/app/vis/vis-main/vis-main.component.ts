@@ -15,8 +15,9 @@ export class VisMainComponent implements OnInit {
 
   private _userTagList: Tag[];
   @Input() set userTagList(value: Tag[]) {
+    var previousValue = this._userTagList;
     this._userTagList = value;
-    this.updateSvgImage();
+    this.drawUserTags();
   }
   get userTagList() {
     return this._userTagList;
@@ -42,6 +43,8 @@ export class VisMainComponent implements OnInit {
 
   @Input() resetVisImageTransform: () => void;
   @Output() resetVisImageTransformChange = new EventEmitter();
+
+  @Input() obtainUserTags: () => void;
 
   //#region For mouse rect area selection
 
@@ -169,8 +172,8 @@ export class VisMainComponent implements OnInit {
         "isModifying": false
       }
     });
+    modal.onDidDismiss().then(this.obtainUserTags);
     modal.present();
-    this.updateSvgImage()
   }
 
   private generateSvgZoom() {
@@ -252,8 +255,8 @@ export class VisMainComponent implements OnInit {
           "isModifying": true
         }
       });
+      modal.onDidDismiss().then(this.obtainUserTags);
       modal.present();
-      this.updateSvgImage();
     }
   }
 }

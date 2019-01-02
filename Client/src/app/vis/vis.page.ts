@@ -48,18 +48,18 @@ export class VisPage implements OnInit {
       this.navCtrl.navigateBack("sign-in");
     } else {
       this.username = username;
-      this.userTagList = await this.obtainUserTags();
+      this.obtainUserTags();
     }
   }
 
-  private async obtainUserTags() {
+  private obtainUserTags = async () => {
     const id = sessionStorage.getItem("userId");
     const response = await this.http.get(Globals.config.serverEndPoint + "/tag", {
       headers: new Headers({
         "User-Unique-Id": id ? id : ""
       })
     }).toPromise();
-    return response.json();
+    this.userTagList = response.json();
   }
 
   private async obtainUsername() {
