@@ -11,25 +11,25 @@ import { Globals } from 'src/app/globals';
 })
 export class AddTagModalPage implements OnInit {
 
-  @Input() private pickedDate: string;
-  @Input() private selectedVariableName: string;
-  @Input() private currentTag: Tag;
+  @Input() pickedDate: string;
+  @Input() selectedVariableName: string;
+  @Input() currentTag: Tag;
 
   @Input() private isModifying: boolean;
 
   sharedUserList: { id: string, username: string }[] = [];
 
-  private get isDateLimited() {
+  get isDateLimited() {
     return this.currentTag.date as unknown as boolean;
   }
-  private set isDateLimited(value: boolean) {
+  set isDateLimited(value: boolean) {
     this.currentTag.date = this.pickedDate;
   }
 
-  private get isVariableLimited() {
+  get isVariableLimited() {
     return this.currentTag.variable as unknown as boolean;
   }
-  private set isVariableLimited(value: boolean) {
+  set isVariableLimited(value: boolean) {
     this.currentTag.variable = this.selectedVariableName;
   }
 
