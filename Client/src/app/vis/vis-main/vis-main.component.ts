@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { Tag } from "../Tag";
 import * as d3 from "d3";
 import { Globals } from "src/app/globals";
-import { Http } from "@angular/http";
 import { AlertController, ModalController } from "@ionic/angular";
 import { AddTagModalPage } from "./add-tag-modal/add-tag-modal.page";
 
@@ -251,7 +250,7 @@ export class VisMainComponent implements OnInit {
         componentProps: {
           "pickedDate": this.pickedDate,
           "selectedVariableName": this.selectedVariableName,
-          "currentTag": tag,
+          "currentTag": Tag.Clone(tag),
           "isModifying": true
         }
       });

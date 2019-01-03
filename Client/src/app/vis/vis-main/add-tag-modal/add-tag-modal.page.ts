@@ -17,7 +17,7 @@ export class AddTagModalPage implements OnInit {
 
   @Input() private isModifying: boolean;
 
-  sharedUserList: { id: string, username: string }[] = [];
+  @Input() sharedUserList: { id: string, username: string }[];
 
   get isDateLimited() {
     return this.currentTag.date as unknown as boolean;
@@ -33,23 +33,37 @@ export class AddTagModalPage implements OnInit {
     this.currentTag.variable = this.selectedVariableName;
   }
 
+  get currentUserId() {
+    return sessionStorage.getItem("userId");
+  }
+
   constructor(private modalCtrl: ModalController, private http: Http, private alertCtrl: AlertController) { }
 
   ngOnInit() {
+    this.updateSharedUserList();
   }
 
+  private async updateSharedUserList() {
+    const response = await this.http.get(
+      Globals.config.serverEndPoint + "/tag/share" + "?tagId=" + this.currentTag.id).toPromise();
+    this.sharedUserList = response.json();
+  }
 
   removeSharedUser(user: { id: string, username: string }) {
     var index = this.sharedUserList.findIndex(u => u.id == user.id);
     this.sharedUserList.splice(index, 1);
   }
 
+  share() {
+
+  }
+
   async save() {
     const id = sessionStorage.getItem("userId");
-    if(this.isModifying){
+    if (this.isModifying) {
       await this.modify(id);
     }
-    else{
+    else {
       await this.add(id);
     }
   }

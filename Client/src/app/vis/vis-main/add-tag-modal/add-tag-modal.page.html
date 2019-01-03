@@ -32,22 +32,24 @@
       <ion-label>Shared with</ion-label>
       <ion-item>
         <ion-list>
-          <ion-item *ngFor="let user of sharedUserList">
-            <ion-label>{{user.username}}</ion-label>
-            <ion-buttons slot="end">
-              <ion-button (click)="removeSharedUser(user)">
-                <ion-icon name="close" size="large"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-item>
-          <ion-item>
-              <ion-input type="text" placeholder="Add a new user"></ion-input>
+          <div *ngFor="let user of sharedUserList">
+            <ion-item *ngIf="user.id != currentUserId">
+              <ion-label>{{user.username}}</ion-label>
               <ion-buttons slot="end">
-                <ion-button (click)="close()">
-                  <ion-icon name="add" size="large"></ion-icon>
+                <ion-button (click)="removeSharedUser(user)">
+                  <ion-icon name="close" size="large"></ion-icon>
                 </ion-button>
               </ion-buttons>
             </ion-item>
+          </div>
+          <ion-item>
+            <ion-input type="text" placeholder="Add a new user"></ion-input>
+            <ion-buttons slot="end">
+              <ion-button (click)="close()">
+                <ion-icon name="add" size="large"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
         </ion-list>
       </ion-item>
     </div>
