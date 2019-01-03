@@ -27,6 +27,16 @@ namespace Server.Controllers
                     select u.Username).FirstOrDefault();
         }
 
+        [HttpGet("exist")]
+        public void ExistUser(string username){
+            var foundUser = (from u in gwfContext.User
+                             where u.Username == username
+                             select u).FirstOrDefault();
+            if(foundUser == null){
+                throw new Exception("User does not exist.");
+            }
+        }
+
         [HttpPut]
         public void Add([FromBody] User user)
         {
