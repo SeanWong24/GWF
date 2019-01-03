@@ -26,7 +26,7 @@
     <ion-col>
       <ion-card>
         <ion-card-content>
-    <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable}}</ion-select-option>
+          <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable}}</ion-select-option>
           <app-vis-control [datasetInfo]="datasetInfo" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName"
             [resetVisImageTransform]="resetVisImageTransform"></app-vis-control>
         </ion-card-content>
@@ -36,12 +36,7 @@
   <ion-row class="lower-row">
     <ion-col>
       <ion-card>
-        <ion-card-header>
-          <ion-card-title>Stats</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p>The content for this card</p>
-        </ion-card-content>
+        <app-vis-stats></app-vis-stats>
       </ion-card>
     </ion-col>
   </ion-row>
