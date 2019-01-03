@@ -14,7 +14,7 @@ export class VisPage implements OnInit {
 
   username: string;
   userTagList: Tag[] = [];
-  datasetInfo: DatasetInfo;
+  datasetInfo: DatasetInfo = {} as DatasetInfo;
   pickedDate: string;
   selectedVariableName: string;
 
