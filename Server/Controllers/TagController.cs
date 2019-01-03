@@ -69,12 +69,16 @@ namespace Server.Controllers
         }
 
         [HttpPut("share")]
-        public void Share(string tagId, [FromBody] List<string> userIdList)
+        public void Share(string tagId, [FromBody] List<string> usernameList)
         {
+            var userIds = (from u in gwfContext.User
+                    from username in usernameList
+                    where u.Username == username
+                    select u.Id).ToList();
             var removeList = from userTag in gwfContext.UserTag
-                             where !userIdList.Contains(userTag.UserId)
+                             where !userIds.Contains(userTag.UserId)
                              select userTag;
-            var addList = from userId in userIdList
+            var addList = from userId in userIds
                           from userTag in gwfContext.UserTag
                           where userId != userTag.UserId
                           select userId;
