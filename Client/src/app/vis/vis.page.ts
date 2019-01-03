@@ -52,7 +52,7 @@ export class VisPage implements OnInit {
     }
   }
 
-  private obtainUserTags = async () => {
+  obtainUserTags = async () => {
     const id = sessionStorage.getItem("userId");
     const response = await this.http.get(Globals.config.serverEndPoint + "/tag", {
       headers: new Headers({
