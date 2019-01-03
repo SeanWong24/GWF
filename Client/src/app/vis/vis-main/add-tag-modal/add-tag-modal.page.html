@@ -43,9 +43,9 @@
             </ion-item>
           </div>
           <ion-item>
-            <ion-input type="text" placeholder="Add a new user"></ion-input>
+            <ion-input type="text" [(ngModel)]="InputnewSharedUsername" placeholder="Add a new user"></ion-input>
             <ion-buttons slot="end">
-              <ion-button (click)="close()">
+              <ion-button (click)="addSharedUser()">
                 <ion-icon name="add" size="large"></ion-icon>
               </ion-button>
             </ion-buttons>

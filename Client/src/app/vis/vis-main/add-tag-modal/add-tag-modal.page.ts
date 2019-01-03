@@ -17,7 +17,8 @@ export class AddTagModalPage implements OnInit {
 
   @Input() private isModifying: boolean;
 
-  @Input() sharedUserList: { id: string, username: string }[];
+  sharedUserList: { id: string, username: string }[];
+  InputnewSharedUsername: string;
 
   get isDateLimited() {
     return this.currentTag.date as unknown as boolean;
@@ -54,11 +55,47 @@ export class AddTagModalPage implements OnInit {
     this.sharedUserList.splice(index, 1);
   }
 
-  share() {
+  async addSharedUser() {
+    try {
+      const response = await this.http.get(
+        Globals.config.serverEndPoint + "/user/exist" + "?username=" + this.InputnewSharedUsername).toPromise();
+      if(!this.sharedUserList.find(u=>u.username==this.InputnewSharedUsername)){
+        this.sharedUserList.push({ id: "", username: this.InputnewSharedUsername });
+      }
+      else{
+        const alt = await this.alertCtrl.create({
+          header: "The User Is Already in the List.",
+          message: "Please try again.",
+          buttons: [
+            "OK"
+          ]
+        });
+        alt.present();
+      }
+      this.InputnewSharedUsername = "";
+    }
+    catch (e) {
+      const alt = await this.alertCtrl.create({
+        header: "The User Does Not Exist.",
+        message: "Please try again.",
+        buttons: [
+          "OK"
+        ]
+      });
+      alt.present();
+    }
+  }
 
+  async share() {
+    const response = await this.http.put(
+      Globals.config.serverEndPoint + "/tag/share",
+      this.sharedUserList.map(u => u.username)
+    ).toPromise();
   }
 
   async save() {
+    this.share();
+
     const id = sessionStorage.getItem("userId");
     if (this.isModifying) {
       await this.modify(id);
