@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { Tag } from "../Tag";
 import * as d3 from "d3";
 import { Globals } from "src/app/globals";
+import { AlertController, ModalController } from "@ionic/angular";
+import { AddTagModalPage } from "./add-tag-modal/add-tag-modal.page";
 
 @Component({
   selector: "app-vis-main",
@@ -12,7 +14,9 @@ export class VisMainComponent implements OnInit {
 
   private _userTagList: Tag[];
   @Input() set userTagList(value: Tag[]) {
+    var previousValue = this._userTagList;
     this._userTagList = value;
+    this.drawUserTags();
   }
   get userTagList() {
     return this._userTagList;
@@ -39,6 +43,30 @@ export class VisMainComponent implements OnInit {
   @Input() resetVisImageTransform: () => void;
   @Output() resetVisImageTransformChange = new EventEmitter();
 
+  @Input() obtainUserTags: () => void;
+
+  //#region For mouse rect area selection
+
+  mouseSelection: [number, number, number, number] = [null, null, null, null];
+  mouserRightButtonDown = false;
+
+  get mouseSelectionRect() {
+    var temp: [number, number, number, number]
+    if (this.mouseSelection[2] && this.mouseSelection[3]) {
+      temp = [0, 0, 0, 0];
+      temp[0] = Math.min(this.mouseSelection[0], this.mouseSelection[2]);
+      temp[1] = Math.min(this.mouseSelection[1], this.mouseSelection[3]);
+      temp[2] = Math.max(this.mouseSelection[0], this.mouseSelection[2]);
+      temp[3] = Math.max(this.mouseSelection[1], this.mouseSelection[3]);
+    }
+    else {
+      temp = this.mouseSelection;
+    }
+    return temp;
+  }
+
+  //#endregion
+
 
   private get mainSvg() {
     return d3.select("app-vis-main svg.main-svg");
@@ -51,7 +79,7 @@ export class VisMainComponent implements OnInit {
       .attr("r", 3 / t.k);
   });
 
-  constructor() { }
+  constructor(private modalCtrl: ModalController) { }
 
   ngOnInit() {
     this.resetVisImageTransformChange.emit(
@@ -68,12 +96,83 @@ export class VisMainComponent implements OnInit {
     const img = g.append("image")
       .attr("width", "100%")
       .attr("height", "100%");
-    img
-      .on("contextmenu.preventDefault", () => d3.event.preventDefault());
-    // .on("mousedown.selectRect", () => this.selectRectMouseDownHandler(img))
-    // .on("mousemove.selectRect", () => this.selectRectMouseMoveHandler(img))
-    // .on("mouseup.selectRect", () => this.selectRectMouseUpHandler());
+    this.mainSvg
+      .on("contextmenu.preventDefault", () => d3.event.preventDefault())
+      .on("mousedown.selectRect", () => this.selectRectMouseDownHandler(img))
+      .on("mousemove.selectRect", () => this.selectRectMouseMoveHandler(img))
+      .on("mouseup.selectRect", () => this.selectRectMouseUpHandler());
     this.generateSvgZoom();
+  }
+
+  private removeUserDrawingRect() {
+    this.mainSvg.selectAll("g.draw-rect").remove();
+  }
+
+  private selectRectMouseDownHandler(img: d3.Selection<d3.BaseType, {}, HTMLElement, any>) {
+    if (d3.event.button == 2) {
+      this.mouseSelection = [null, null, null, null];
+      var position = d3.mouse(img.node() as any);
+      this.mouseSelection[0] = position[0];
+      this.mouseSelection[1] = position[1];
+
+      this.removeUserDrawingRect();
+      var g = this.mainSvg.append("g")
+        .classed("draw-rect", true)
+        .attr("transform", this.mainSvg.select("g.image-holder").attr("transform"));
+      g.append("rect")
+        .attr("fill", "red")
+        .attr("opacity", .3)
+
+      this.mouserRightButtonDown = true;
+    }
+  }
+
+  private selectRectMouseMoveHandler(img: d3.Selection<d3.BaseType, {}, HTMLElement, any>) {
+    if (this.mouserRightButtonDown) {
+      var position = d3.mouse(img.node() as any);
+
+      this.mouseSelection[2] = position[0];
+      this.mouseSelection[3] = position[1];
+
+      this.mainSvg.select("g.draw-rect rect")
+        .attr("x", this.mouseSelectionRect[0])
+        .attr("y", this.mouseSelectionRect[1])
+        .attr("width", this.mouseSelectionRect[2] - this.mouseSelectionRect[0])
+        .attr("height", this.mouseSelectionRect[3] - this.mouseSelectionRect[1]);
+    }
+  }
+
+  private selectRectMouseUpHandler() {
+    if (d3.event.button == 2) {
+      this.addUserTag(this.mouseSelectionRect);
+      this.mouserRightButtonDown = false;
+      this.removeUserDrawingRect();
+    }
+  }
+
+  private async addUserTag(rect: [number, number, number, number]) {
+    var position;
+    var tagType: string;
+    if (!rect[2] && !rect[3]) {
+      tagType = "dot";
+      position = "(" + rect[0] + "," + rect[1] + ")";
+    }
+    else {
+      tagType = "rect";
+      position = "(" + rect[0] + "," + rect[1] + "," + rect[2] + "," + rect[3] + ")";
+    }
+
+    const modal = await this.modalCtrl.create({
+      component: AddTagModalPage,
+      componentProps: {
+        "pickedDate": this.pickedDate,
+        "selectedVariableName": this.selectedVariableName,
+        "currentTag": new Tag("", tagType, "#111111", position, ""),
+        "isModifying": false
+      }
+    });
+    modal.onDidDismiss().then(this.obtainUserTags);
+    modal.present();
   }
 
   private generateSvgZoom() {
@@ -83,7 +182,7 @@ export class VisMainComponent implements OnInit {
 
   private updateSvgImage() {
     if (this.pickedDate && this.selectedVariableName && !this.mainSvg.select("g.image-holder image").empty()) {
-    // if (true) {
+      // if (true) {
       const dateSplit = this.pickedDate.split("-");
       this.mainSvg.select("g.image-holder image")
         .attr(
@@ -122,7 +221,7 @@ export class VisMainComponent implements OnInit {
               .attr("r", 3)
               .attr("opacity", .5)
               .attr("fill", tag.color)
-              // .on("click", this.userTagClickedHandler(tag))
+              .on("click", this.userTagClickedHandler(tag))
               .append("title")
               .text(tag.name);
             break;
@@ -136,7 +235,7 @@ export class VisMainComponent implements OnInit {
               .attr("height", +position[3] - +position[1])
               .attr("opacity", .5)
               .attr("fill", tag.color)
-              // .on("click", this.userTagClickedHandler(tag))
+              .on("click", this.userTagClickedHandler(tag))
               .append("title")
               .text(tag.name);
         }
@@ -144,4 +243,19 @@ export class VisMainComponent implements OnInit {
     }
   }
 
+  userTagClickedHandler(tag: Tag) {
+    return async () => {
+      const modal = await this.modalCtrl.create({
+        component: AddTagModalPage,
+        componentProps: {
+          "pickedDate": this.pickedDate,
+          "selectedVariableName": this.selectedVariableName,
+          "currentTag": Tag.Clone(tag),
+          "isModifying": true
+        }
+      });
+      modal.onDidDismiss().then(this.obtainUserTags);
+      modal.present();
+    }
+  }
 }

@@ -8,6 +8,7 @@ import { IonicModule } from "@ionic/angular";
 import { VisPage } from "./vis.page";
 import { VisControlComponent } from "./vis-control/vis-control.component";
 import { VisMainComponent } from "./vis-main/vis-main.component";
+import { VisStatsComponent } from './vis-stats/vis-stats.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [VisPage, VisControlComponent, VisMainComponent]
+  declarations: [VisPage, VisControlComponent, VisMainComponent, VisStatsComponent]
 })
 export class VisPageModule {}

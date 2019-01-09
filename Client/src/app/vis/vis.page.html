@@ -20,13 +20,14 @@
     <ion-col size="12" size-md="9">
       <ion-card>
         <app-vis-main [userTagList]="userTagList" [pickedDate]="pickedDate" [selectedVariableName]="selectedVariableName"
-          [(resetVisImageTransform)]="resetVisImageTransform"></app-vis-main>
+          [(resetVisImageTransform)]="resetVisImageTransform" [obtainUserTags]="obtainUserTags"></app-vis-main>
       </ion-card>
     </ion-col>
     <ion-col>
       <ion-card>
         <ion-card-content>
-          <app-vis-control [appConfig]="appConfig" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName"
+          <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable}}</ion-select-option>
+          <app-vis-control [datasetInfo]="datasetInfo" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName"
             [resetVisImageTransform]="resetVisImageTransform"></app-vis-control>
         </ion-card-content>
       </ion-card>
@@ -35,12 +36,7 @@
   <ion-row class="lower-row">
     <ion-col>
       <ion-card>
-        <ion-card-header>
-          <ion-card-title>Stats</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p>The content for this card</p>
-        </ion-card-content>
+        <app-vis-stats></app-vis-stats>
       </ion-card>
     </ion-col>
   </ion-row>

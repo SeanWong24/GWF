@@ -3,6 +3,7 @@ import { Tag } from "./Tag";
 import { NavController, AlertController, PopoverController } from "@ionic/angular";
 import { Http, Headers } from "@angular/http";
 import { Globals } from "../globals";
+import { DatasetInfo } from "../DatasetInfo";
 
 @Component({
   selector: "app-vis",
@@ -13,7 +14,7 @@ export class VisPage implements OnInit {
 
   username: string;
   userTagList: Tag[] = [];
-  appConfig = Globals.config;
+  datasetInfo: DatasetInfo = {} as DatasetInfo;
   pickedDate: string;
   selectedVariableName: string;
 
@@ -25,8 +26,14 @@ export class VisPage implements OnInit {
   async ngOnInit() {
     this.verifyUser();
 
-    this.pickedDate = this.appConfig.minDate;
-    this.selectedVariableName = this.appConfig.variableList[0];
+    this.datasetInfo = await this.obtainDatasetInfo();
+    this.pickedDate = this.datasetInfo.minDate;
+    this.selectedVariableName = this.datasetInfo.variableList[0];
+  }
+
+  private async obtainDatasetInfo() {
+    var response = await this.http.get(Globals.config.serverEndPoint + "/dataset").toPromise();
+    return response.json();
   }
 
   private async verifyUser() {
@@ -41,18 +48,18 @@ export class VisPage implements OnInit {
       this.navCtrl.navigateBack("sign-in");
     } else {
       this.username = username;
-      this.userTagList = await this.obtainUserTags();
+      this.obtainUserTags();
     }
   }
 
-  private async obtainUserTags() {
+  obtainUserTags = async () => {
     const id = sessionStorage.getItem("userId");
     const response = await this.http.get(Globals.config.serverEndPoint + "/tag", {
       headers: new Headers({
         "User-Unique-Id": id ? id : ""
       })
     }).toPromise();
-    return response.json();
+    this.userTagList = response.json();
   }
 
   private async obtainUsername() {
