@@ -6,9 +6,10 @@ import sys
 
 try:
     inputPath = sys.argv[1]
-    outputPath = sys.argv[2]
+    variableStartIndex = int(sys.argv[2])
+    outputPath = sys.argv[3]
 except:
-    print("arguments help: <input_path> <output_path>")
+    print("arguments help: <input_path> <variable_start_index> <output_path>")
     exit()
 
 def getFieldIndex(headers, fieldName):
@@ -21,17 +22,7 @@ for fileName in os.listdir(inputPath):
 
         headers = ls.pop(0)
 
-        latList = list()
-        i = getFieldIndex(headers, "latitude")
-        for item in ls:
-            latList.append(item[i])
-
-        lonList = list()
-        i = getFieldIndex(headers, "longitude")
-        for item in ls:
-            lonList.append(item[i])
-
-        for i in range(3, len(headers)):
+        for i in range(variableStartIndex, len(headers)):
             varList = list()
             varName = headers[i]
             for item in ls:
