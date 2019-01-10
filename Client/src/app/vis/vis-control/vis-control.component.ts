@@ -31,6 +31,7 @@ export class VisControlComponent implements OnInit {
   }
 
   @Input() resetVisImageTransform: () => void;
+  @Input() resetPCBrush: () => void;
 
   constructor() { }
 

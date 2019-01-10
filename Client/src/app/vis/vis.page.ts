@@ -19,6 +19,7 @@ export class VisPage implements OnInit {
   selectedVariableName: string;
 
   resetVisImageTransform: () => void;
+  resetPCBrush: () => void;
 
 
   constructor(private navCtrl: NavController, private http: Http, private alertCtrl: AlertController) { }

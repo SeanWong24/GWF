@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
 import ParCoords from "parcoord-es";
 import { Http } from '@angular/http';
 import { Globals } from 'src/app/globals';
@@ -15,22 +15,26 @@ import { Globals } from 'src/app/globals';
 export class VisStatsComponent implements OnInit {
 
   private _pickedDate: string;
-  @Input() private set pickedDate(value:string){
-    this._pickedDate=value;
+  @Input() private set pickedDate(value: string) {
+    this._pickedDate = value;
     this.generateChart();
   }
-  private get pickedDate(){
+  private get pickedDate() {
     return this._pickedDate;
   }
 
+  private chart: any;
   private detailData: any[];
+
+  @Input() resetPCBrush: () => void;
+  @Output() resetPCBrushChange = new EventEmitter();
 
   constructor(private http: Http) { }
 
   ngOnInit() {
   }
 
-  private async generateChart(){
+  private async generateChart() {
     var params =
       "?date=" + this.pickedDate +
       "&xMin=" + 0 +
@@ -45,16 +49,22 @@ export class VisStatsComponent implements OnInit {
       delete datum.longitude;
     }
 
-    var chart = ParCoords()("div.stats-main-div")
-      chart.data(this.detailData)
-        .margin({
-          top: 20,
-          left: 20,
-          right: 20,
-          bottom: 20
-        })
-        .render()
-        .createAxes();
+    this.chart = ParCoords()("div.stats-main-div")
+      .data(this.detailData)
+      .margin({
+        top: 20,
+        left: 20,
+        right: 20,
+        bottom: 20
+      })
+      .color("rgba(100,100,200,0.3)")
+      .render()
+      .createAxes()
+      .brushMode("1D-axes");
+
+    this.resetPCBrushChange.emit(
+      () => this.chart.brushReset()
+    );
   }
 
 }
