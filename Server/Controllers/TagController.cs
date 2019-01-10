@@ -72,15 +72,17 @@ namespace Server.Controllers
         public void Share(string tagId, [FromBody] List<string> usernameList)
         {
             var userIds = (from u in gwfContext.User
-                    from username in usernameList
-                    where u.Username == username
-                    select u.Id).ToList();
+                           from username in usernameList
+                           where u.Username == username
+                           select u.Id).ToList();
             var removeList = from userTag in gwfContext.UserTag
                              where !userIds.Contains(userTag.UserId)
                              select userTag;
             var addList = from userId in userIds
-                          from userTag in gwfContext.UserTag
-                          where userId != userTag.UserId
+                          where !(from userTag in gwfContext.UserTag
+                                 where userId == userTag.UserId
+                                 select userId
+                                ).Any()
                           select userId;
             gwfContext.UserTag.RemoveRange(removeList);
             foreach (var userId in addList)
