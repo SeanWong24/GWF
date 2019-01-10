@@ -88,17 +88,17 @@ export class AddTagModalPage implements OnInit {
 
   async share() {
     const response = await this.http.put(
-      Globals.config.serverEndPoint + "/tag/share",
+      Globals.config.serverEndPoint + "/tag/share" + "?tagId=" + this.currentTag.id,
       this.sharedUserList.map(u => u.username)
     ).toPromise();
   }
 
   async save() {
-    this.share();
-
     const id = sessionStorage.getItem("userId");
     if (this.isModifying) {
       await this.modify(id);
+      
+      this.share();
     }
     else {
       await this.add(id);
