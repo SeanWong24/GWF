@@ -58,8 +58,10 @@ export class VisStatsComponent implements OnInit {
         bottom: 20
       })
       .color("rgba(100,100,200,0.3)")
+      .mode("queue")
       .render()
       .createAxes()
+      .reorderable()
       .brushMode("1D-axes");
 
     this.resetPCBrushChange.emit(
