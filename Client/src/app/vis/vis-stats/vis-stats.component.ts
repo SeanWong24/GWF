@@ -43,14 +43,20 @@ export class VisStatsComponent implements OnInit {
       "&yMax=" + 638;
     const response = await this.http.get(Globals.config.serverEndPoint + "/dataset/detail" + params).toPromise();
     this.detailData = response.json();
-    for (const datum of this.detailData) {
-      delete datum.time;
-      delete datum.latitude;
-      delete datum.longitude;
+
+    var keys = Object.keys(this.detailData[0]);
+    keys.splice(keys.indexOf("latitude"), 1);
+    keys.splice(keys.indexOf("longitude"), 1);
+    keys.splice(keys.indexOf("time"), 1);
+
+    var dimensions = {};
+    for (const key of keys) {
+      dimensions[key] = { "type": "number" }
     }
 
     this.chart = ParCoords()("div.stats-main-div")
       .data(this.detailData)
+      .dimensions(dimensions)
       .margin({
         top: 20,
         left: 20,
