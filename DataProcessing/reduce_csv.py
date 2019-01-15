@@ -53,7 +53,7 @@ for fileName in os.listdir(inputPath):
                 dataList.append(d)
 
         os.makedirs(outputPath, exist_ok = True)
-        outputFilename = outputPath + fileName
+        outputFilename = os.path.join(outputPath, fileName)
         print("Writing to " + outputFilename + "...")
         with open(outputFilename, "w", newline = "") as outFile:
             writer = csv.DictWriter(outFile, fieldnames = headers)
