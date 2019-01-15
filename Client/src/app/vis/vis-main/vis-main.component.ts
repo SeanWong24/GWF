@@ -46,6 +46,7 @@ export class VisMainComponent implements OnInit {
   @Output() resetVisImageTransformChange = new EventEmitter();
 
   @Input() obtainUserTags: () => void;
+  @Input() updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
 
   //#region For mouse rect area selection
 
@@ -154,7 +155,16 @@ export class VisMainComponent implements OnInit {
           break;
         default:
           this.mouserRightButtonDown = false;
-          alert("!!!")
+          if (!this.mouseSelectionRect[2] && !this.mouseSelectionRect[3]) {
+            this.updateChart(this.pickedDate);
+          }
+          else {
+            var xMin = this.mouseSelectionRect[0] / 700 * 699;
+            var yMin = this.mouseSelectionRect[1] / 640 * 639;
+            var xMax = this.mouseSelectionRect[2] / 700 * 699;
+            var yMax = this.mouseSelectionRect[2] / 640 * 639;
+            this.updateChart(this.pickedDate, xMin, yMin, xMax, yMax);
+          }
           break;
       }
     }

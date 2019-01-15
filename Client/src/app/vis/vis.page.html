@@ -19,7 +19,7 @@
   <ion-row class="upper-row">
     <ion-col size="12" size-md="9">
       <ion-card>
-        <app-vis-main [userTagList]="userTagList" [pickedDate]="pickedDate" [selectedVariableName]="selectedVariableName" [selectRectForAddingTag]="selectRectForAddingTag"
+        <app-vis-main [userTagList]="userTagList" [pickedDate]="pickedDate" [selectedVariableName]="selectedVariableName" [selectRectForAddingTag]="selectRectForAddingTag" [updateChart]="updateChart"
           [(resetVisImageTransform)]="resetVisImageTransform" [obtainUserTags]="obtainUserTags"></app-vis-main>
       </ion-card>
     </ion-col>
@@ -36,7 +36,7 @@
   <ion-row class="lower-row">
     <ion-col>
       <ion-card>
-        <app-vis-stats [pickedDate]="pickedDate" [(resetPCBrush)]="resetPCBrush"></app-vis-stats>
+        <app-vis-stats [pickedDate]="pickedDate" [(resetPCBrush)]="resetPCBrush" [(updateChart)]="updateChart"></app-vis-stats>
       </ion-card>
     </ion-col>
   </ion-row>

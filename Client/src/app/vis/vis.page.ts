@@ -21,6 +21,7 @@ export class VisPage implements OnInit {
 
   resetVisImageTransform: () => void;
   resetPCBrush: () => void;
+  updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
 
 
   constructor(private navCtrl: NavController, private http: Http, private alertCtrl: AlertController) { }
