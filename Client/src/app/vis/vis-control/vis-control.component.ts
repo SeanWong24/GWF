@@ -30,6 +30,16 @@ export class VisControlComponent implements OnInit {
     return this._selectedVariableName;
   }
 
+  @Input() private _selectRectForAddingTag: boolean;
+  @Input() set selectRectForAddingTag(value: boolean) {
+    this._selectRectForAddingTag = value;
+    this.selectRectForAddingTagChange.emit(value);
+  }
+  @Output() selectRectForAddingTagChange = new EventEmitter();
+  get selectRectForAddingTag() {
+    return this._selectRectForAddingTag;
+  }
+
   @Input() resetVisImageTransform: () => void;
   @Input() resetPCBrush: () => void;
 

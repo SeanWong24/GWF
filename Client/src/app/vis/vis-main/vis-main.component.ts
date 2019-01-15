@@ -40,6 +40,8 @@ export class VisMainComponent implements OnInit {
     return this._selectedVariableName;
   }
 
+  @Input() private selectRectForAddingTag: boolean;
+
   @Input() resetVisImageTransform: () => void;
   @Output() resetVisImageTransformChange = new EventEmitter();
 
@@ -144,9 +146,17 @@ export class VisMainComponent implements OnInit {
 
   private selectRectMouseUpHandler() {
     if (d3.event.button == 2) {
-      this.addUserTag(this.mouseSelectionRect);
-      this.mouserRightButtonDown = false;
-      this.removeUserDrawingRect();
+      switch (this.selectRectForAddingTag) {
+        case true:
+          this.addUserTag(this.mouseSelectionRect);
+          this.mouserRightButtonDown = false;
+          this.removeUserDrawingRect();
+          break;
+        default:
+          this.mouserRightButtonDown = false;
+          alert("!!!")
+          break;
+      }
     }
   }
 

@@ -17,6 +17,7 @@ export class VisPage implements OnInit {
   datasetInfo: DatasetInfo = {} as DatasetInfo;
   pickedDate: string;
   selectedVariableName: string;
+  selectRectForAddingTag: boolean = true;
 
   resetVisImageTransform: () => void;
   resetPCBrush: () => void;

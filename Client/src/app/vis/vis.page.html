@@ -19,7 +19,7 @@
   <ion-row class="upper-row">
     <ion-col size="12" size-md="9">
       <ion-card>
-        <app-vis-main [userTagList]="userTagList" [pickedDate]="pickedDate" [selectedVariableName]="selectedVariableName"
+        <app-vis-main [userTagList]="userTagList" [pickedDate]="pickedDate" [selectedVariableName]="selectedVariableName" [selectRectForAddingTag]="selectRectForAddingTag"
           [(resetVisImageTransform)]="resetVisImageTransform" [obtainUserTags]="obtainUserTags"></app-vis-main>
       </ion-card>
     </ion-col>
@@ -27,7 +27,7 @@
       <ion-card>
         <ion-card-content>
           <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable}}</ion-select-option>
-          <app-vis-control [datasetInfo]="datasetInfo" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName"
+          <app-vis-control [datasetInfo]="datasetInfo" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName" [(selectRectForAddingTag)]="selectRectForAddingTag"
             [resetVisImageTransform]="resetVisImageTransform" [resetPCBrush]="resetPCBrush"></app-vis-control>
         </ion-card-content>
       </ion-card>
