@@ -30,7 +30,7 @@ export class VisControlComponent implements OnInit {
     return this._selectedVariableName;
   }
 
-  @Input() private _selectRectForAddingTag: boolean;
+  private _selectRectForAddingTag: boolean;
   @Input() set selectRectForAddingTag(value: boolean) {
     this._selectRectForAddingTag = value;
     this.selectRectForAddingTagChange.emit(value);
@@ -40,8 +40,22 @@ export class VisControlComponent implements OnInit {
     return this._selectRectForAddingTag;
   }
 
+  private _isShowingBrushedChartData: boolean;
+  @Input() set isShowingBrushedChartData(value: boolean) {
+    this._isShowingBrushedChartData = value;
+    this.isShowingBrushedChartDataChange.emit(value);
+    if (this.showPCBrushedRange) {
+      this.showPCBrushedRange();
+    }
+  }
+  @Output() isShowingBrushedChartDataChange = new EventEmitter();
+  get isShowingBrushedChartData() {
+    return this._isShowingBrushedChartData;
+  }
+
   @Input() resetVisImageTransform: () => void;
   @Input() resetPCBrush: () => void;
+  @Input() showPCBrushedRange: () => void;
 
   constructor() { }
 

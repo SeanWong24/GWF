@@ -19,7 +19,7 @@
   <ion-row class="upper-row">
     <ion-col size="12" size-md="9">
       <ion-card>
-        <app-vis-main [userTagList]="userTagList" [pickedDate]="pickedDate" [selectedVariableName]="selectedVariableName" [selectRectForAddingTag]="selectRectForAddingTag" [updateChart]="updateChart"
+        <app-vis-main [userTagList]="userTagList" [pickedDate]="pickedDate" [selectedVariableName]="selectedVariableName" [selectRectForAddingTag]="selectRectForAddingTag" [updateChart]="updateChart" [brushedChartData]="brushedChartData" [isShowingBrushedChartData]="isShowingBrushedChartData" [(showPCBrushedRange)]="showPCBrushedRange"
           [(resetVisImageTransform)]="resetVisImageTransform" [obtainUserTags]="obtainUserTags"></app-vis-main>
       </ion-card>
     </ion-col>
@@ -27,8 +27,8 @@
       <ion-card>
         <ion-card-content>
           <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable}}</ion-select-option>
-          <app-vis-control [datasetInfo]="datasetInfo" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName" [(selectRectForAddingTag)]="selectRectForAddingTag"
-            [resetVisImageTransform]="resetVisImageTransform" [resetPCBrush]="resetPCBrush"></app-vis-control>
+          <app-vis-control [datasetInfo]="datasetInfo" [(pickedDate)]="pickedDate" [(selectedVariableName)]="selectedVariableName" [(selectRectForAddingTag)]="selectRectForAddingTag" [(isShowingBrushedChartData)]="isShowingBrushedChartData"
+            [resetVisImageTransform]="resetVisImageTransform" [resetPCBrush]="resetPCBrush" [showPCBrushedRange]="showPCBrushedRange"></app-vis-control>
         </ion-card-content>
       </ion-card>
     </ion-col>
@@ -36,7 +36,7 @@
   <ion-row class="lower-row">
     <ion-col>
       <ion-card>
-        <app-vis-stats [pickedDate]="pickedDate" [(resetPCBrush)]="resetPCBrush" [(updateChart)]="updateChart"></app-vis-stats>
+        <app-vis-stats [pickedDate]="pickedDate" [(brushedChartData)]="brushedChartData" [(resetPCBrush)]="resetPCBrush" [(updateChart)]="updateChart" [showPCBrushedRange]="showPCBrushedRange"></app-vis-stats>
       </ion-card>
     </ion-col>
   </ion-row>

@@ -34,14 +34,18 @@ export class VisStatsComponent implements OnInit {
   @Input() updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
   @Output() updateChartChange = new EventEmitter();
 
+  @Input() brushedChartData: any;
+  @Output() brushedChartDataChange = new EventEmitter();
+
+  @Input() showPCBrushedRange: () => void;
+
   constructor(private http: Http) { }
 
   ngOnInit() {
-    this.updateChart = async (date: string, xMin = 0, yMin = 0, xMax = 698, yMax = 638) => {
+    this.updateChartChange.emit(async (date: string, xMin = 0, yMin = 0, xMax = 698, yMax = 638) => {
       this.chartData = await this.obtainChartData(date, xMin, yMin, xMax, yMax);
       this.generateChart();
-    };
-    this.updateChartChange.emit(this.updateChart);
+    });
   }
 
   private generateChart() {
@@ -71,7 +75,13 @@ export class VisStatsComponent implements OnInit {
       .render()
       .createAxes()
       .reorderable()
-      .brushMode("1D-axes");
+      .brushMode("1D-axes")
+      .on("brush", d => {
+        this.brushedChartDataChange.emit(d);
+        if (this.showPCBrushedRange) {
+          this.showPCBrushedRange();
+        }
+      });
 
     this.resetPCBrushChange.emit(
       () => this.chart.brushReset()

@@ -18,10 +18,13 @@ export class VisPage implements OnInit {
   pickedDate: string;
   selectedVariableName: string;
   selectRectForAddingTag: boolean = true;
+  brushedChartData: any;
+  isShowingBrushedChartData: boolean = false;
 
   resetVisImageTransform: () => void;
   resetPCBrush: () => void;
   updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
+  showPCBrushedRange: () => void;
 
 
   constructor(private navCtrl: NavController, private http: Http, private alertCtrl: AlertController) { }

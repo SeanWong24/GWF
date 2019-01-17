@@ -41,12 +41,18 @@ export class VisMainComponent implements OnInit {
   }
 
   @Input() private selectRectForAddingTag: boolean;
+  @Input() private brushedChartData: any;
+  @Input() isShowingBrushedChartData: boolean;
+
+  @Input() obtainUserTags: () => void;
+  @Input() updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
 
   @Input() resetVisImageTransform: () => void;
   @Output() resetVisImageTransformChange = new EventEmitter();
 
-  @Input() obtainUserTags: () => void;
-  @Input() updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
+
+  @Input() showPCBrushedRange: () => void;
+  @Output() showPCBrushedRangeChange = new EventEmitter();
 
   //#region For mouse rect area selection
 
@@ -87,6 +93,25 @@ export class VisMainComponent implements OnInit {
   ngOnInit() {
     this.resetVisImageTransformChange.emit(
       () => this.zoom.transform(this.mainSvg as any, d3.zoomIdentity)
+    );
+    this.showPCBrushedRangeChange.emit(
+      () => {
+        this.mainSvg.selectAll(".brushed-chart-data-vis").remove();
+        if (this.isShowingBrushedChartData) {
+          const g = this.mainSvg.append("g")
+            .classed("brushed-chart-data-vis", true);
+          g.selectAll("rect")
+            .data(this.brushedChartData)
+            .enter()
+            .append("rect")
+            .attr("x", (d: any) => +d.latitude / 699 * 640 - 640 / 70 / 2)
+            .attr("y", (d: any) => +d.longitude / 639 * 480 - 480 / 64 / 2)
+            .attr("width", (d: any) => 640 / 70)
+            .attr("height", (d: any) => 480 / 64)
+            .attr("fill", "white")
+            .attr("opacity", .3);
+        }
+      }
     );
 
     this.generateVisulization();
