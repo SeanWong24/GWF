@@ -3,7 +3,7 @@ import ParCoords from "parcoord-es";
 import { Http } from '@angular/http';
 import { Globals } from 'src/app/globals';
 import * as d3 from 'd3';
-import { generate } from 'rxjs';
+import { rgb } from 'd3';
 
 @Component({
   selector: 'app-vis-stats',
@@ -23,6 +23,15 @@ export class VisStatsComponent implements OnInit {
   }
   private get pickedDate() {
     return this._pickedDate;
+  }
+
+  private _selectedVariableName: string;
+  @Input() private set selectedVariableName(value: string) {
+    this._selectedVariableName = value;
+    this.updateChart(this._pickedDate);
+  }
+  private get selectedVariableName() {
+    return this._selectedVariableName;
   }
 
   private chart: any;
@@ -70,12 +79,13 @@ export class VisStatsComponent implements OnInit {
         right: 20,
         bottom: 20
       })
-      .color("rgba(100,100,200,0.3)")
       .mode("queue")
       .render()
       .createAxes()
       .reorderable()
       .brushMode("1D-axes")
+      .color(d => d3.scaleLinear().domain([0, 1]).range(["blue", "red"] as any)(d[this.selectedVariableName]))
+      .alpha(.3)
       .on("brush", d => {
         this.brushedChartDataChange.emit(d);
         if (this.showPCBrushedRange) {
