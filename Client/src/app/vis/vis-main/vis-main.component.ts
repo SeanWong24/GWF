@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import { Globals } from "src/app/globals";
 import { AlertController, ModalController } from "@ionic/angular";
 import { AddTagModalPage } from "./add-tag-modal/add-tag-modal.page";
+import { DatasetDetail } from "src/app/DatasetInfo";
 
 @Component({
   selector: "app-vis-main",
@@ -31,13 +32,13 @@ export class VisMainComponent implements OnInit {
     return this._pickedDate;
   }
 
-  private _selectedVariableName: string;
-  @Input() set selectedVariableName(value: string) {
-    this._selectedVariableName = value;
+  private _selectedVariable: DatasetDetail;
+  @Input() set selectedVariable(value: DatasetDetail) {
+    this._selectedVariable = value;
     this.updateSvgImage();
   }
-  get selectedVariableName() {
-    return this._selectedVariableName;
+  get selectedVariable() {
+    return this._selectedVariable;
   }
 
   @Input() private selectRectForAddingTag: boolean;
@@ -211,7 +212,7 @@ export class VisMainComponent implements OnInit {
       component: AddTagModalPage,
       componentProps: {
         "pickedDate": this.pickedDate,
-        "selectedVariableName": this.selectedVariableName,
+        "selectedVariableName": this.selectedVariable.name,
         "currentTag": new Tag("", tagType, "#111111", position, ""),
         "isModifying": false
       }
@@ -226,7 +227,7 @@ export class VisMainComponent implements OnInit {
   }
 
   private updateSvgImage() {
-    if (this.pickedDate && this.selectedVariableName && !this.mainSvg.select("g.image-holder image").empty()) {
+    if (this.pickedDate && this.selectedVariable && !this.mainSvg.select("g.image-holder image").empty()) {
       // if (true) {
       const dateSplit = this.pickedDate.split("-");
       this.mainSvg.select("g.image-holder image")
@@ -234,7 +235,7 @@ export class VisMainComponent implements OnInit {
           "xlink:href",
           Globals.config.visImageBasePath + "/" +
           dateSplit[0] + "/" + dateSplit[1] + "/" + dateSplit[2] + "/" +
-          this.selectedVariableName + ".png"
+          this.selectedVariable.name + ".png"
         );
 
       this.drawUserTags();
@@ -253,7 +254,7 @@ export class VisMainComponent implements OnInit {
     for (const tag of this.userTagList) {
       if (
         (!tag.date || tag.date.substring(0, 10) == this.pickedDate) &&
-        (!tag.variable || tag.variable == this.selectedVariableName)
+        (!tag.variable || tag.variable == this.selectedVariable.name)
       ) {
         let position: string[] = [];
         switch (tag.type) {
@@ -294,7 +295,7 @@ export class VisMainComponent implements OnInit {
         component: AddTagModalPage,
         componentProps: {
           "pickedDate": this.pickedDate,
-          "selectedVariableName": this.selectedVariableName,
+          "selectedVariableName": this.selectedVariable.name,
           "currentTag": Tag.Clone(tag),
           "isModifying": true
         }

@@ -4,6 +4,7 @@ import { Http } from '@angular/http';
 import { Globals } from 'src/app/globals';
 import * as d3 from 'd3';
 import { rgb } from 'd3';
+import { DatasetDetail } from 'src/app/DatasetInfo';
 
 @Component({
   selector: 'app-vis-stats',
@@ -25,13 +26,13 @@ export class VisStatsComponent implements OnInit {
     return this._pickedDate;
   }
 
-  private _selectedVariableName: string;
-  @Input() private set selectedVariableName(value: string) {
-    this._selectedVariableName = value;
+  private _selectedVariable: DatasetDetail;
+  @Input() private set selectedVariable(value: DatasetDetail) {
+    this._selectedVariable = value;
     this.updateChart(this._pickedDate);
   }
-  private get selectedVariableName() {
-    return this._selectedVariableName;
+  private get selectedVariable() {
+    return this._selectedVariable;
   }
 
   private chart: any;
@@ -84,7 +85,7 @@ export class VisStatsComponent implements OnInit {
       .createAxes()
       .reorderable()
       .brushMode("1D-axes")
-      .color(d => d3.scaleLinear().domain([0, 1]).range(["blue", "red"] as any)(d[this.selectedVariableName]))
+      .color(d => d3.scaleLinear().domain([0, 1]).range(["blue", "red"] as any)(d[this.selectedVariable.name]))
       .alpha(.3)
       .on("brush", d => {
         this.brushedChartDataChange.emit(d);

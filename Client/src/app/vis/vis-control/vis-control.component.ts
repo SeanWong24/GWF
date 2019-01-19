@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { DatasetInfo } from "src/app/DatasetInfo";
+import { DatasetInfo, DatasetDetail } from "src/app/DatasetInfo";
 
 @Component({
   selector: "app-vis-control",
@@ -20,14 +20,14 @@ export class VisControlComponent implements OnInit {
     return this._pickedDate;
   }
 
-  private _selectedVariableName: string;
-  @Input() set selectedVariableName(value: string) {
-    this._selectedVariableName = value;
-    this.selectedVariableNameChange.emit(value);
+  private _selectedVariable: DatasetDetail;
+  @Input() set selectedVariable(value: DatasetDetail) {
+    this._selectedVariable = value;
+    this.selectedVariableChange.emit(value);
   }
-  @Output() selectedVariableNameChange = new EventEmitter();
-  get selectedVariableName() {
-    return this._selectedVariableName;
+  @Output() selectedVariableChange = new EventEmitter();
+  get selectedVariable() {
+    return this._selectedVariable;
   }
 
   private _selectRectForAddingTag: boolean;
