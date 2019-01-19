@@ -85,7 +85,7 @@ export class VisStatsComponent implements OnInit {
       .createAxes()
       .reorderable()
       .brushMode("1D-axes")
-      .color(d => d3.scaleLinear().domain([0, 1]).range(["blue", "red"] as any)(d[this.selectedVariable.name]))
+      .color(d => d3.scaleLinear().domain([this.selectedVariable.minValue, this.selectedVariable.maxValue]).range(["blue", "red"] as any)(d[this.selectedVariable.name]))
       .alpha(.3)
       .on("brush", d => {
         this.brushedChartDataChange.emit(d);
