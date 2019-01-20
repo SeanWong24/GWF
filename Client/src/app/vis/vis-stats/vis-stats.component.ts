@@ -94,6 +94,8 @@ export class VisStatsComponent implements OnInit {
         }
       });
 
+    this.brushedChartDataChange.emit(this.chartData);
+
     this.resetPCBrushChange.emit(
       () => this.chart.brushReset()
     );
