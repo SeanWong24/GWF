@@ -185,10 +185,11 @@ export class VisMainComponent implements OnInit {
             this.updateChart(this.pickedDate);
           }
           else {
-            var xMin = this.mouseSelectionRect[0] / 700 * 699;
-            var yMin = this.mouseSelectionRect[1] / 640 * 639;
-            var xMax = this.mouseSelectionRect[2] / 700 * 699;
+            // Todo modify back-end
+            var yMin = this.mouseSelectionRect[0] / 640 * 639;
+            var xMin = 699 - this.mouseSelectionRect[3] / 480 * 699;
             var yMax = this.mouseSelectionRect[2] / 640 * 639;
+            var xMax = 699 - this.mouseSelectionRect[1] / 480 * 699;
             this.updateChart(this.pickedDate, xMin, yMin, xMax, yMax);
           }
           break;
