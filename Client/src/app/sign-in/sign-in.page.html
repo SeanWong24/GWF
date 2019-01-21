@@ -1,0 +1,24 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>GWF Sign In</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content padding>
+  <ion-card class="sign-in-card">
+    <ion-img src="/assets/GWF_logo.jpg"></ion-img>
+    <ion-card-header>
+      <ion-card-title class="sign-in-card-title" text-center>Sign In</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-input required type="text" placeholder="User Name" [(ngModel)]="username" autofocus></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input required type="password" placeholder="Password" [(ngModel)]="password" (keyup.enter)="signIn()"></ion-input>
+      </ion-item>
+      <ion-button expand="block" (click)="signIn()">{{signInButtonText}}</ion-button>
+      <ion-button fill="outline" color="medium" expand="block" (click)="signUp()">Sign Up</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

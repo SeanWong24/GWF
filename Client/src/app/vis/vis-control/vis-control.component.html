@@ -1,0 +1,20 @@
+<ion-button (click)="resetVisImageTransform()">Reset Position and Scale</ion-button>
+<ion-item>
+  <ion-label>Date</ion-label>
+  <ion-datetime displayFormat="YYYY-MM-DD" [min]="datasetInfo.minDate" [max]="datasetInfo.maxDate" [(ngModel)]="pickedDate"></ion-datetime>
+</ion-item>
+<ion-item>
+  <ion-label>Variable</ion-label>
+  <ion-select [(ngModel)]="selectedVariable">
+    <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable.name}}</ion-select-option>
+  </ion-select>
+</ion-item>
+<ion-button (click)="resetPCBrush()">Reset PC Brush</ion-button>
+<ion-item>
+  <ion-label>Show Brushed Range</ion-label>
+  <ion-toggle [(ngModel)]="isShowingBrushedChartData"></ion-toggle>
+</ion-item>
+<ion-item>
+  <ion-label>Select For Comments</ion-label>
+  <ion-toggle [(ngModel)]="selectRectForAddingTag"></ion-toggle>
+</ion-item>
