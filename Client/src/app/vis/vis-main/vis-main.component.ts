@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import { Globals } from "src/app/globals";
 import { AlertController, ModalController } from "@ionic/angular";
 import { AddTagModalPage } from "./add-tag-modal/add-tag-modal.page";
+import { DatasetDetail } from "src/app/DatasetInfo";
 
 @Component({
   selector: "app-vis-main",
@@ -31,19 +32,28 @@ export class VisMainComponent implements OnInit {
     return this._pickedDate;
   }
 
-  private _selectedVariableName: string;
-  @Input() set selectedVariableName(value: string) {
-    this._selectedVariableName = value;
+  private _selectedVariable: DatasetDetail;
+  @Input() set selectedVariable(value: DatasetDetail) {
+    this._selectedVariable = value;
     this.updateSvgImage();
   }
-  get selectedVariableName() {
-    return this._selectedVariableName;
+  get selectedVariable() {
+    return this._selectedVariable;
   }
+
+  @Input() private selectRectForAddingTag: boolean;
+  @Input() private brushedChartData: any;
+  @Input() isShowingBrushedChartData: boolean;
+
+  @Input() obtainUserTags: () => void;
+  @Input() updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
 
   @Input() resetVisImageTransform: () => void;
   @Output() resetVisImageTransformChange = new EventEmitter();
 
-  @Input() obtainUserTags: () => void;
+
+  @Input() showPCBrushedRange: () => void;
+  @Output() showPCBrushedRangeChange = new EventEmitter();
 
   //#region For mouse rect area selection
 
@@ -84,6 +94,25 @@ export class VisMainComponent implements OnInit {
   ngOnInit() {
     this.resetVisImageTransformChange.emit(
       () => this.zoom.transform(this.mainSvg as any, d3.zoomIdentity)
+    );
+    this.showPCBrushedRangeChange.emit(
+      () => {
+        this.mainSvg.selectAll(".brushed-chart-data-vis").remove();
+        if (this.isShowingBrushedChartData) {
+          const g = this.mainSvg.append("g")
+            .classed("brushed-chart-data-vis", true);
+          g.selectAll("rect")
+            .data(this.brushedChartData)
+            .enter()
+            .append("rect")
+            .attr("x", (d: any) => +d.longitude / 639 * 640 - 640 / 64 / 2)
+            .attr("y", (d: any) => (699 - +d.latitude) / 699 * 480 - 480 / 70 / 2)
+            .attr("width", (d: any) => 640 / 70)
+            .attr("height", (d: any) => 480 / 64)
+            .attr("fill", "white")
+            .attr("opacity", .3);
+        }
+      }
     );
 
     this.generateVisulization();
@@ -144,9 +173,27 @@ export class VisMainComponent implements OnInit {
 
   private selectRectMouseUpHandler() {
     if (d3.event.button == 2) {
-      this.addUserTag(this.mouseSelectionRect);
-      this.mouserRightButtonDown = false;
-      this.removeUserDrawingRect();
+      switch (this.selectRectForAddingTag) {
+        case true:
+          this.addUserTag(this.mouseSelectionRect);
+          this.mouserRightButtonDown = false;
+          this.removeUserDrawingRect();
+          break;
+        default:
+          this.mouserRightButtonDown = false;
+          if (!this.mouseSelectionRect[2] && !this.mouseSelectionRect[3]) {
+            this.updateChart(this.pickedDate);
+          }
+          else {
+            // Todo modify back-end
+            var yMin = this.mouseSelectionRect[0] / 640 * 639;
+            var xMin = 699 - this.mouseSelectionRect[3] / 480 * 699;
+            var yMax = this.mouseSelectionRect[2] / 640 * 639;
+            var xMax = 699 - this.mouseSelectionRect[1] / 480 * 699;
+            this.updateChart(this.pickedDate, xMin, yMin, xMax, yMax);
+          }
+          break;
+      }
     }
   }
 
@@ -166,7 +213,7 @@ export class VisMainComponent implements OnInit {
       component: AddTagModalPage,
       componentProps: {
         "pickedDate": this.pickedDate,
-        "selectedVariableName": this.selectedVariableName,
+        "selectedVariableName": this.selectedVariable.name,
         "currentTag": new Tag("", tagType, "#111111", position, ""),
         "isModifying": false
       }
@@ -181,7 +228,7 @@ export class VisMainComponent implements OnInit {
   }
 
   private updateSvgImage() {
-    if (this.pickedDate && this.selectedVariableName && !this.mainSvg.select("g.image-holder image").empty()) {
+    if (this.pickedDate && this.selectedVariable && !this.mainSvg.select("g.image-holder image").empty()) {
       // if (true) {
       const dateSplit = this.pickedDate.split("-");
       this.mainSvg.select("g.image-holder image")
@@ -189,7 +236,7 @@ export class VisMainComponent implements OnInit {
           "xlink:href",
           Globals.config.visImageBasePath + "/" +
           dateSplit[0] + "/" + dateSplit[1] + "/" + dateSplit[2] + "/" +
-          this.selectedVariableName + ".png"
+          this.selectedVariable.name + ".png"
         );
 
       this.drawUserTags();
@@ -208,7 +255,7 @@ export class VisMainComponent implements OnInit {
     for (const tag of this.userTagList) {
       if (
         (!tag.date || tag.date.substring(0, 10) == this.pickedDate) &&
-        (!tag.variable || tag.variable == this.selectedVariableName)
+        (!tag.variable || tag.variable == this.selectedVariable.name)
       ) {
         let position: string[] = [];
         switch (tag.type) {
@@ -249,7 +296,7 @@ export class VisMainComponent implements OnInit {
         component: AddTagModalPage,
         componentProps: {
           "pickedDate": this.pickedDate,
-          "selectedVariableName": this.selectedVariableName,
+          "selectedVariableName": this.selectedVariable.name,
           "currentTag": Tag.Clone(tag),
           "isModifying": true
         }

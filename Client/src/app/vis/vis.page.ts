@@ -3,7 +3,7 @@ import { Tag } from "./Tag";
 import { NavController, AlertController, PopoverController } from "@ionic/angular";
 import { Http, Headers } from "@angular/http";
 import { Globals } from "../globals";
-import { DatasetInfo } from "../DatasetInfo";
+import { DatasetInfo, DatasetDetail } from "../DatasetInfo";
 
 @Component({
   selector: "app-vis",
@@ -16,9 +16,15 @@ export class VisPage implements OnInit {
   userTagList: Tag[] = [];
   datasetInfo: DatasetInfo = {} as DatasetInfo;
   pickedDate: string;
-  selectedVariableName: string;
+  selectedVariable: DatasetDetail;
+  selectRectForAddingTag: boolean = true;
+  brushedChartData: any;
+  isShowingBrushedChartData: boolean = false;
 
   resetVisImageTransform: () => void;
+  resetPCBrush: () => void;
+  updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
+  showPCBrushedRange: () => void;
 
 
   constructor(private navCtrl: NavController, private http: Http, private alertCtrl: AlertController) { }
@@ -28,7 +34,7 @@ export class VisPage implements OnInit {
 
     this.datasetInfo = await this.obtainDatasetInfo();
     this.pickedDate = this.datasetInfo.minDate;
-    this.selectedVariableName = this.datasetInfo.variableList[0];
+    this.selectedVariable = this.datasetInfo.variableList[0];
   }
 
   private async obtainDatasetInfo() {

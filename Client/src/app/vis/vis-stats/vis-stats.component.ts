@@ -1,7 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
 import ParCoords from "parcoord-es";
 import { Http } from '@angular/http';
 import { Globals } from 'src/app/globals';
+import * as d3 from 'd3';
+import { rgb } from 'd3';
+import { DatasetDetail } from 'src/app/DatasetInfo';
 
 @Component({
   selector: 'app-vis-stats',
@@ -14,28 +17,98 @@ import { Globals } from 'src/app/globals';
 })
 export class VisStatsComponent implements OnInit {
 
-  constructor(private http: Http) { }
-
-  async ngOnInit() {
-    // Todo replace with real data
-    setTimeout(() => {
-      var chart = ParCoords()("div.stats-main-div")
-      chart.data([
-        { RAINC: 0, RAINNC: 0, GLW: 273.35892, QFX: 0.00002854525, SNOW: 0 },
-        { RAINC: 0, RAINNC: 0, GLW: 273.33548, QFX: 0.000028596769, SNOW: 0 },
-        { RAINC: 0, RAINNC: 0, GLW: 273.30606, QFX: 0.000028685186, SNOW: 0 },
-        { RAINC: 0, RAINNC: 0, GLW: 273.2762, QFX: 0.00002877807, SNOW: 0 },
-        { RAINC: 0, RAINNC: 0, GLW: 273.2467, QFX: 0.000028882061, SNOW: 0 },
-      ])
-        .margin({
-          top: 20,
-          left: 20,
-          right: 20,
-          bottom: 20
-        })
-        .render()
-        .createAxes();
-    }, 1000);
+  private _pickedDate: string;
+  @Input() private set pickedDate(value: string) {
+    this._pickedDate = value;
+    this.updateChart(value);
+  }
+  private get pickedDate() {
+    return this._pickedDate;
   }
 
+  private _selectedVariable: DatasetDetail;
+  @Input() private set selectedVariable(value: DatasetDetail) {
+    this._selectedVariable = value;
+    this.updateChart(this._pickedDate);
+  }
+  private get selectedVariable() {
+    return this._selectedVariable;
+  }
+
+  private chart: any;
+  private chartData: any[];
+
+  @Input() resetPCBrush: () => void;
+  @Output() resetPCBrushChange = new EventEmitter();
+
+  @Input() updateChart: (date: string, xMin?: number, yMin?: number, xMax?: number, yMax?: number) => void;
+  @Output() updateChartChange = new EventEmitter();
+
+  @Input() brushedChartData: any;
+  @Output() brushedChartDataChange = new EventEmitter();
+
+  @Input() showPCBrushedRange: () => void;
+
+  constructor(private http: Http) { }
+
+  ngOnInit() {
+    this.updateChartChange.emit(async (date: string, xMin = 0, yMin = 0, xMax = 698, yMax = 638) => {
+      this.chartData = await this.obtainChartData(date, xMin, yMin, xMax, yMax);
+      this.generateChart();
+    });
+  }
+
+  private generateChart() {
+    var keys = Object.keys(this.chartData[0]);
+    keys.splice(keys.indexOf("latitude"), 1);
+    keys.splice(keys.indexOf("longitude"), 1);
+    keys.splice(keys.indexOf("time"), 1);
+
+    var dimensions = {};
+    for (const key of keys) {
+      dimensions[key] = { "type": "number" }
+    }
+
+    d3.selectAll("div.stats-main-div").selectAll("*").remove();
+
+    this.chart = ParCoords()("div.stats-main-div")
+      .data(this.chartData)
+      .dimensions(dimensions)
+      .margin({
+        top: 20,
+        left: 20,
+        right: 20,
+        bottom: 20
+      })
+      .mode("queue")
+      .render()
+      .createAxes()
+      .reorderable()
+      .brushMode("1D-axes")
+      .color(d => d3.scaleLinear().domain([this.selectedVariable.minValue, this.selectedVariable.maxValue]).range(["blue", "red"] as any)(d[this.selectedVariable.name]))
+      .alpha(.3)
+      .on("brush", d => {
+        this.brushedChartDataChange.emit(d);
+        if (this.showPCBrushedRange) {
+          this.showPCBrushedRange();
+        }
+      });
+
+    this.brushedChartDataChange.emit(this.chartData);
+
+    this.resetPCBrushChange.emit(
+      () => this.chart.brushReset()
+    );
+  }
+
+
+  private async obtainChartData(date: string, xMin: number, yMin: number, xMax: number, yMax: number) {
+    var params = "?date=" + date +
+      "&xMin=" + xMin +
+      "&yMin=" + yMin +
+      "&xMax=" + xMax +
+      "&yMax=" + yMax;
+    const response = await this.http.get(Globals.config.serverEndPoint + "/dataset/detail" + params).toPromise();
+    return response.json();
+  }
 }

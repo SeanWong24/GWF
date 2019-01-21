@@ -5,10 +5,16 @@
 </ion-item>
 <ion-item>
   <ion-label>Variable</ion-label>
-  <ion-select [(ngModel)]="selectedVariableName">
-    <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable}}</ion-select-option>
+  <ion-select [(ngModel)]="selectedVariable">
+    <ion-select-option *ngFor="let variable of datasetInfo.variableList" [value]="variable">{{variable.name}}</ion-select-option>
   </ion-select>
-  <!-- <select [(ngModel)]="selectedVariableName">
-    <option *ngFor="let item of appConfig.variableList" [value]="item">{{item}}</option>
-  </select> -->
+</ion-item>
+<ion-button (click)="resetPCBrush()">Reset PC Brush</ion-button>
+<ion-item>
+  <ion-label>Show Brushed Range</ion-label>
+  <ion-toggle [(ngModel)]="isShowingBrushedChartData"></ion-toggle>
+</ion-item>
+<ion-item>
+  <ion-label>Select For Comments</ion-label>
+  <ion-toggle [(ngModel)]="selectRectForAddingTag"></ion-toggle>
 </ion-item>
