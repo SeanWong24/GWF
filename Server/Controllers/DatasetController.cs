@@ -29,7 +29,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("detail")]
-        public object GetDetail(string date, int xMin, int yMin, int xMax, int yMax)
+        public object GetDetail(string date, double xMin, double yMin, double xMax, double yMax)
         {
             var basePath = hostingEnvironment.WebRootPath;
             var filePath = Path.Combine(basePath, "csv", date + ".csv");
@@ -40,13 +40,14 @@ namespace Server.Controllers
                 var records = csv.GetRecords<dynamic>();
                 var rangedRecord = from record in records
                                    let dict = new Dictionary<string, object>(record)
-                                   let lat = int.Parse(dict["latitude"].ToString())
+                                   let lat = double.Parse(dict["latitude"].ToString())
                                    where lat >= xMin && lat <= xMax
-                                   let lon = int.Parse(dict["longitude"].ToString())
+                                   let lon = double.Parse(dict["longitude"].ToString())
                                    where lon >= yMin && lon <= yMax
                                    // Todo calculate mean
-                                   group record by lat / 10 + " " + lon / 10 into g
-                                   select g.FirstOrDefault();
+                                //    group record by lat / 10 + " " + lon / 10 into g
+                                //    select g.FirstOrDefault();
+                                    select record;
                 return rangedRecord.ToList();
             }
         }
