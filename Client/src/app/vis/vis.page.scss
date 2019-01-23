@@ -1,13 +1,17 @@
-.upper-row {
-    height: 75%;
+.content-row {
+    height: 100%;
 }
 
-.lower-row {
-    height: 25%;
+.content-row-col-1 {
+    max-height: 75%;
 }
 
-ion-col {
-    max-height: 100%;
+.content-row-col-2 {
+    max-height: 75%;
+}
+
+.content-row-col-3 {
+    min-height: 25%;
 }
 
 ion-card {
